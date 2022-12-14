@@ -2,6 +2,19 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Day 7",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "buildDay7",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/2022/day7/bin/Debug/net7.0/day7.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/2022/day7",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
             "name": "Day 6",
             "type": "coreclr",
             "request": "launch",
