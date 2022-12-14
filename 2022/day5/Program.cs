@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System.Text.RegularExpressions;
-
+bool part1 = false;
 string[] lines = File.ReadAllLines("input.txt");
 
 List<Stack<char>> stacks = new List<Stack<char>>();
@@ -50,10 +50,29 @@ foreach(string line in lines)
             int numToMove = Convert.ToInt32(match.Groups[1].Value);
             int sourceStack = Convert.ToInt32(match.Groups[2].Value) - 1;
             int destStack = Convert.ToInt32(match.Groups[3].Value) - 1;
+
+            Stack<char> tmpStack = new Stack<char>();
             for (int i = 0; i < numToMove; i++)
             {
                 char poppedCrate = reversedStacks[sourceStack].Pop();
-                reversedStacks[destStack].Push(poppedCrate);
+                if (part1)
+                {
+                    reversedStacks[destStack].Push(poppedCrate);
+                }
+                else
+                {
+                    tmpStack.Push(poppedCrate);
+                }
+
+            }
+
+            if (!part1)
+            {
+                while(tmpStack.Count > 0)
+                {
+                    char tmpCrate = tmpStack.Pop();
+                    reversedStacks[destStack].Push(tmpCrate);
+                }
             }
 
         }
