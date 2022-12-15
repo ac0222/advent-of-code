@@ -88,7 +88,16 @@ int GetDirectorySize (ElfDirectory dir, Dictionary<string, int> sizes)
     return dirSize;
 }
 
-int CUTOFF = 100_000;
+const int CUTOFF = 100_000;
 int sumOfBelowCutoff = sizes.Values.Where(x => x <= CUTOFF).Sum();
 Console.WriteLine(sumOfBelowCutoff);
+
+
+const int TOTAL_FILE_SIZE = 70_000_000;
+const int FREE_SPACE_NEEDED = 30_000_000;
+
+int amountToDelete = FREE_SPACE_NEEDED - (TOTAL_FILE_SIZE - rootDirSize);
+int dirToDeleteSize = sizes.Values.Where(x => x >= amountToDelete).Order().First();
+Console.WriteLine(dirToDeleteSize);
+
 Console.WriteLine("done");
