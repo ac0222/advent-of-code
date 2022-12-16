@@ -9,12 +9,20 @@ int[][] treeGrid = File.ReadAllLines("input.txt")
 int numVisibleTrees = 0;
 int gridWidth = treeGrid[0].Length;
 int gridHeight = treeGrid.Length;
+int maxScenicScore = -1;
+int currentScenicScore = -1;
 
 for (int i = 0; i < gridHeight; i++)
 {
     for (int j = 0; j < gridWidth; j++)
     {
         numVisibleTrees += Convert.ToInt32(IsTreeVisible(i, j));
+        currentScenicScore = GetScenicScore(i, j);
+        if (currentScenicScore > maxScenicScore)
+        {
+            maxScenicScore = currentScenicScore;
+        }
+        
     }
 }
 
@@ -90,5 +98,68 @@ bool IsTreeVisible(int row, int col)
     return false;
 }
 
+int GetScenicScore(int row, int col)
+{
+    if (row == 0 || row == gridHeight - 1 || col == 0 || col == gridWidth - 1)
+    {
+        return 0;
+    }
+    int treeHeight = treeGrid[row][col];
+    int scoreLeft = 0;
+    int scoreRight = 0;
+    int scoreTop = 0;
+    int scoreBottom = 0;
+    int counter;
+    // look left
+    counter = col - 1;
+    while (counter >= 0)
+    {
+        scoreLeft++;
+        if (treeGrid[row][counter] >= treeHeight)
+        {
+            break;
+        }
+        counter--;
+    }
+
+    // look right
+    counter = col + 1;
+    while (counter < gridWidth)
+    {
+        scoreRight++;
+        if (treeGrid[row][counter] >= treeHeight)
+        {
+            break;
+        }
+        counter++;
+    }
+
+    // look up
+    counter = row - 1;
+    while (counter >= 0)
+    {
+        scoreTop++;
+        if (treeGrid[counter][col] >= treeHeight)
+        {
+            break;
+        }
+        counter--;
+    }
+
+    // look down
+    counter = row + 1;
+    while (counter < gridHeight)
+    {
+        scoreBottom++;
+        if (treeGrid[counter][col] >= treeHeight)
+        {
+            break;
+        }
+        counter++;
+    }
+    return scoreLeft * scoreRight * scoreTop * scoreBottom;
+
+}
 Console.WriteLine(numVisibleTrees);
+Console.WriteLine(maxScenicScore);
 Console.WriteLine("done");
