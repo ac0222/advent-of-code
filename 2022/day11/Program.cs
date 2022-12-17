@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-string[] lines = File.ReadAllLines("input.txt");
+string[] lines = File.ReadAllLines("input_test.txt");
 
 var monkeyInfoList = lines.Chunk(7);
 List<Monkey> monkeys = new List<Monkey>();
@@ -49,7 +49,9 @@ for (int i = 0; i < NUM_ROUNDS; i++)
         while (monkey.Items.Count> 0)
         {
             int x = monkey.Items.Dequeue();
-            int worryLevelPostInspect = monkey.Inspect(x) / 3;
+            //int worryLevelPostInspect = monkey.Inspect(x) / 3;
+            int worryLevelPostInspect = monkey.Inspect(x);
+
             if (worryLevelPostInspect % monkey.Divisor == 0)
             {
                 monkeys[monkey.TargetIfTrue].Items.Enqueue(worryLevelPostInspect);
@@ -60,12 +62,8 @@ for (int i = 0; i < NUM_ROUNDS; i++)
             }
         }
     }
-    Console.WriteLine($"After round {i+1} the monkeys are holding items with these worry levels:");
-    for (int m = 0; m < monkeys.Count; m++)
-    {
-        Monkey monkey = monkeys[m];
-        Console.WriteLine($"Monkey {m}: {string.Join(", ", monkey.Items)}");
-    }
+    //PrintMonkeyItems(i+1);
+    PrintMonkeyInspections(i+1);
 
 }
 
@@ -76,6 +74,26 @@ int monkeyBusiness = monkeys
     .Aggregate(1, (prod, next) => prod * next);
 Console.WriteLine($"Level of monkey business is {monkeyBusiness}");
 Console.WriteLine("done");
+
+void PrintMonkeyItems (int roundNumber)
+{
+    Console.WriteLine($"After round {roundNumber} the monkeys are holding items with these worry levels:");
+    for (int m = 0; m < monkeys.Count; m++)
+    {
+        Monkey monkey = monkeys[m];
+        Console.WriteLine($"Monkey {m}: {string.Join(", ", monkey.Items)}");
+    }
+}
+
+void PrintMonkeyInspections(int roundNumber)
+{
+    Console.WriteLine($"== After round {roundNumber} ==");
+    for (int m = 0; m < monkeys.Count; m++)
+    {
+        Monkey monkey = monkeys[m];
+        Console.WriteLine($"Monkey {m} inspected items {monkey.NumberOfInspections} times.");
+    }
+}
 
 public class Monkey 
 {
