@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 var packetPairs = File.ReadAllLines("input.txt").Chunk(3);
-
+List<Packet> packets = new List<Packet>();
 List<int> inOrder = new List<int>();
 int index = 0;
 foreach (var pair in packetPairs)
@@ -9,30 +9,42 @@ foreach (var pair in packetPairs)
     string packetString2 = pair[1];
     Packet packetLeft = Packet.ParseString(packetString1);
     Packet packetRight = Packet.ParseString(packetString2);
-    Console.WriteLine(packetLeft.ToString());
-    Console.WriteLine(packetRight.ToString());
-    if (packetLeft.ComparePackets(packetRight) < 0)
+    packets.Add(packetLeft);
+    packets.Add(packetRight);
+    if (packetLeft.CompareTo(packetRight) < 0)
     {
         inOrder.Add(index + 1);
     }
     index++;
-
 }
+
+Packet twoDivider = Packet.ParseString("[[2]]");
+Packet sixDivider = Packet.ParseString("[[6]]");
+
+packets.Add(twoDivider);
+packets.Add(sixDivider);
+packets.Sort();
+int twoIndex = packets.IndexOf(twoDivider) + 1;
+int sixIndex = packets.IndexOf(sixDivider) + 1;
+int decoderKey = twoIndex * sixIndex;
+
+
 
 int sumOfInOrder = inOrder.Sum();
 Console.WriteLine(sumOfInOrder);
+Console.WriteLine(decoderKey);
 Console.WriteLine("Done");
 
-public class Packet
+public class Packet : IComparable
 {
-    public const string DIGITS = "0123456789";
     public List<Packet> Packets {get; set;} = new List<Packet>();
     public int? PacketValue {get; set;}
     // 1 if bigger
     // -1 if smaller
     // 0 if equal
-    public int ComparePackets(Packet other)
+    public int CompareTo(object obj)
     {
+        Packet other = obj as Packet;
         if (PacketValue.HasValue && other.PacketValue.HasValue)
         {
             return PacketValue.Value.CompareTo(other.PacketValue.Value);
@@ -41,13 +53,13 @@ public class Packet
         {
             Packet wrappedPacket = new Packet();
             wrappedPacket.Packets.Add(this);
-            return wrappedPacket.ComparePackets(other);
+            return wrappedPacket.CompareTo(other);
         }
         else if (!PacketValue.HasValue && other.PacketValue.HasValue)
         {
             Packet wrappedPacket = new Packet ();
             wrappedPacket.Packets.Add(other);
-            return ComparePackets(wrappedPacket);
+            return CompareTo(wrappedPacket);
         }
         else
         {
@@ -56,7 +68,7 @@ public class Packet
             int shorter = Math.Min(thisLength, thatLength);
             for (int i = 0; i < shorter; i++)
             {
-                int cmpResult = Packets[i].ComparePackets(other.Packets[i]);
+                int cmpResult = Packets[i].CompareTo(other.Packets[i]);
                 if (cmpResult != 0)
                 {
                     return cmpResult;
